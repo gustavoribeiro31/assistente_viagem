@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de viagem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://www.varchev.com/wp-content/uploads/2017/09/R6A8Pa2hA1CkL1ARQYjkshuF.jpeg');
+            background-size: cover; /* Para cobrir todo o elemento body */
+            background-repeat: no-repeat; /* Para evitar repetição da imagem */
+            background-position: center; /* Para centralizar a imagem */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-image: url('https://cacheconsultants.com/wp-content/uploads/2019/04/light-bg_NCP.jpg');
+            background-size: cover; /* Para cobrir todo o elemento body */
+            background-repeat: no-repeat; /* Para evitar repetição da imagem */
+            background-position: center; /* Para centralizar a imagem */
+            margin: 0 auto; /* Adição para centralizar horizontalmente */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #calcular-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        #calcular-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #resultado_cidade,
+        #resultado {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Assistente de Viagem</h1>
+        <form action="#">
+            <label for="nome_destino">Cidade de Destino:</label>
+            <input type="text" id="nome_destino" name="nome_destino" required><br>
+
+            <label for="distancia_destino_km">Distância (km):</label>
+            <input type="number" id="distancia_destino_km" name="distancia_destino_km" required><br>
+
+            <label for="consumo_carro_etanol">Consumo do carro "Etanol" (km/l):</label>
+            <input type="text" id="consumo_carro_etanol" name="consumo_carro_gasolina" required><br>
+
+            <label for="consumo_carro_gasolina">Consumo do carro "Gasolina" (km/l):</label>
+            <input type="text" id="consumo_carro_gasolina" name="consumo_carro_gasolina" required><br>
+
+            <label for="preco_etanol">Preço do etanol (R$/litro):</label>
+            <input type="text" id="preco_etanol" name="preco_etanol" required><br>
+
+            <label for="preco_gasolina">Preço da gasolina (R$/litro):</label>
+            <input type="text" id="preco_gasolina" name="preco_gasolina" required><br>
+
+            <label for="pedagio">Valor do pedágio:</label>
+            <input type="text" id="pedagio" name="pedagio"><br>
+
+            <label for="combustivel">Tipo de combustível preferido:</label>
+            <select id="combustivel" name="combustivel">
+                <option value="etanol">Etanol</option>
+                <option value="gasolina">Gasolina</option>
+            </select><br>
+            <p></p>
+            <input type="submit" id="calcular-btn" value="Calcular">
+        </form>
+        <p></p>
+        <div id="resultado_cidade" style="display: none;">
+            <p></p>
+        </div>
+        <div id="resultado" style="display: none;">
+            <p id="resultado_total"></p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var nomeDestino = document.getElementById('nome_destino').value;
+            var distancia = parseFloat(document.getElementById('distancia_destino_km').value);
+            var consumoCarro_etanol = parseFloat(document.getElementById('consumo_carro_etanol').value.replace(',', '.'));
+            var consumoCarro_gasolina = parseFloat(document.getElementById('consumo_carro_gasolina').value.replace(',', '.'));
+            var precoEtanol = parseFloat(document.getElementById('preco_etanol').value.replace(',', '.'));
+            var precoGasolina = parseFloat(document.getElementById('preco_gasolina').value.replace(',', '.'));
+            var pedagio = parseFloat(document.getElementById('pedagio').value.replace(',', '.'));
+            var combustivelSelecionado = document.getElementById('combustivel').value;
+
+            var rendimento_etanol = precoEtanol / consumoCarro_etanol;
+            var totalAPagarEtanol = distancia * rendimento_etanol;
+
+            var rendimento_gasolina = precoGasolina / consumoCarro_gasolina;
+            var totalAPagarGasolina = distancia * rendimento_gasolina;
+
+            var totalGeralEtanol = totalAPagarEtanol + pedagio;
+            var totalGeralGasolina = totalAPagarGasolina + pedagio;
+
+            var resultadoCidade = `Cidade de Destino: ${nomeDestino}`;
+            var resultadoFinal = '';
+
+            if (combustivelSelecionado === 'etanol') {
+                resultadoFinal = `Total da viagem: Combustível (Etanol) + Pedágio = R$${totalAPagarEtanol.toFixed(2)} + R$${pedagio.toFixed(2)} = R$${totalGeralEtanol.toFixed(2)}`;
+            } else {
+                resultadoFinal = `Total da viagem: Combustível (Gasolina) + Pedágio = R$${totalAPagarGasolina.toFixed(2)} + R$${pedagio.toFixed(2)} = R$${totalGeralGasolina.toFixed(2)}`;
+            }
+
+            document.getElementById('resultado_cidade').innerHTML = resultadoCidade;
+            document.getElementById('resultado_total').textContent = resultadoFinal;
+
+            document.getElementById('resultado_cidade').style.display = 'block';
+            document.getElementById('resultado').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
